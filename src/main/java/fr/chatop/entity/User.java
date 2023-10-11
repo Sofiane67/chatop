@@ -3,6 +3,8 @@ package fr.chatop.entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -14,6 +16,12 @@ public class User {
     private String email;
     private String name;
     private String password;
+
+    @OneToMany(mappedBy = "ownerId", cascade = CascadeType.REMOVE)
+    private List<Rental> rentals;
+
+    @OneToMany(mappedBy = "userId")
+    private List<Message> messages;
     @Column(name = "created_at")
     private Instant createdAt;
     @Column(name = "updated_at")
@@ -29,6 +37,8 @@ public class User {
         this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.rentals = new ArrayList<>();
+        this.messages = new ArrayList<>();
     }
 
     public int getId() {
@@ -78,4 +88,14 @@ public class User {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public List<Rental> getRentals() {
+        return rentals;
+    }
+
+    public void setRentals(List<Rental> rentals) {
+        this.rentals = rentals;
+    }
+
+
 }
