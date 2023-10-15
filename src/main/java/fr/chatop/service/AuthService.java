@@ -1,12 +1,15 @@
 package fr.chatop.service;
 
 import fr.chatop.dto.RegisterDTO;
+import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.User;
 import fr.chatop.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,9 +38,8 @@ public class AuthService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         return authorities;
     }
-    public void signUp(RegisterDTO signUpInformations){
+    public User signUp(RegisterDTO signUpInformations){
         boolean userExist = this.userService.verifyUserExist(signUpInformations.email());
-
         if(!userExist){
             User user = new User();
             user.setName(signUpInformations.name());
@@ -46,7 +48,22 @@ public class AuthService implements UserDetailsService {
             user.setPassword(hashPassword);
             user.setCreatedAt(Instant.now());
             user.setUpdatedAt(Instant.now());
-            this.userRepository.save(user);
+            return this.userRepository.save(user);
         }
+
+        return null;
+    }
+
+    public UserDTO getUserLogged(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!authentication.isAuthenticated()){
+            return null;
+        }
+
+        String userEmail = authentication.getName();
+
+        User user = this.userService.getUserByEmail(userEmail);
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }

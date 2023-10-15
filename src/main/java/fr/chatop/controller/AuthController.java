@@ -4,18 +4,18 @@ import fr.chatop.config.jwt.JwtService;
 import fr.chatop.dto.AuthDTO;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.dto.SuccessResponse;
+import fr.chatop.dto.UserDTO;
+import fr.chatop.entity.User;
 import fr.chatop.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -32,12 +32,15 @@ public class AuthController {
 
     @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<SuccessResponse> signUp(@RequestBody RegisterDTO signUpInformations){
-        this.authService.signUp(signUpInformations);
+        User user = this.authService.signUp(signUpInformations);
+        Map <String, String> jwt = this.jwtService.generate(user.getEmail());
+        String bearer = "Bearer "+jwt.get("token");
+
         int statusCode = HttpStatus.OK.value();
         HttpStatus status = HttpStatus.OK;
         String message = "Inscription réussie";
         SuccessResponse response = new SuccessResponse(statusCode, status, message);
-        return ResponseEntity.status(status).body(response);
+        return ResponseEntity.status(status).header(HttpHeaders.AUTHORIZATION, bearer).body(response);
     }
 
     @PostMapping(path = "login", consumes = APPLICATION_JSON_VALUE)
@@ -51,4 +54,8 @@ public class AuthController {
         return null;
     }
 
+    @GetMapping(path = "me")
+    public UserDTO getUserLogged(){
+        return this.authService.getUserLogged();
+    }
 }
