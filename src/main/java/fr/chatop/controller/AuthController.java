@@ -1,5 +1,6 @@
 package fr.chatop.controller;
 
+import fr.chatop.config.jwt.JwtService;
 import fr.chatop.dto.AuthDTO;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.dto.SuccessResponse;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -24,6 +28,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthController {
     private AuthService authService;
     private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
     @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<SuccessResponse> signUp(@RequestBody RegisterDTO signUpInformations){
@@ -36,11 +41,14 @@ public class AuthController {
     }
 
     @PostMapping(path = "login", consumes = APPLICATION_JSON_VALUE)
-    public String signIn(@RequestBody AuthDTO signInInformations){
+    public Map<String,String> signIn(@RequestBody AuthDTO signInInformations){
         final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInInformations.login(), signInInformations.password())
+                new UsernamePasswordAuthenticationToken(signInInformations.email(), signInInformations.password())
         );
-        return "ok";
+        if(authentication.isAuthenticated()) {
+            return this.jwtService.generate(signInInformations.email());
+        }
+        return null;
     }
 
 }

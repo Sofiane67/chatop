@@ -2,8 +2,10 @@ package fr.chatop.advice;
 
 import fr.chatop.dto.ErrorEntity;
 import fr.chatop.exception.AuthenticateException;
+import fr.chatop.exception.UnauthorizedException;
 import fr.chatop.exception.UserExistException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,5 +23,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticateException.class)
     public @ResponseBody ErrorEntity handleAuthenticationException(AuthenticateException exception){
         return new ErrorEntity(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, exception.getMessage());
+    }
+
+//    @ExceptionHandler(UnauthorizedException.class)
+//    public @ResponseBody ErrorEntity handleUnauthorizedException(UnauthorizedException exception){
+//        return new ErrorEntity(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, exception.getMessage());
+//    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorEntity> handleUnauthorizedException(UnauthorizedException exception){
+        ErrorEntity errorEntity = new ErrorEntity(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return new ResponseEntity<>(errorEntity, HttpStatus.UNAUTHORIZED);
     }
 }

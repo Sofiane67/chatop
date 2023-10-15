@@ -1,6 +1,5 @@
 package fr.chatop.service;
 
-import fr.chatop.dto.AuthDTO;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.entity.User;
 import fr.chatop.repository.UserRepository;
@@ -27,7 +26,7 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.userRepository.findByEmail(email).orElseThrow();
+        User user = this.userService.getUserByEmail(email);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getGrantedAuthorities());
     }
 
@@ -37,7 +36,7 @@ public class AuthService implements UserDetailsService {
         return authorities;
     }
     public void signUp(RegisterDTO signUpInformations){
-        boolean userExist = this.userService.getUserByEmail(signUpInformations.email());
+        boolean userExist = this.userService.verifyUserExist(signUpInformations.email());
 
         if(!userExist){
             User user = new User();
