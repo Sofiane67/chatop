@@ -1,10 +1,7 @@
 package fr.chatop.controller;
 
 import fr.chatop.config.jwt.JwtService;
-import fr.chatop.dto.AuthDTO;
-import fr.chatop.dto.RegisterDTO;
-import fr.chatop.dto.SuccessResponse;
-import fr.chatop.dto.UserDTO;
+import fr.chatop.dto.*;
 import fr.chatop.entity.User;
 import fr.chatop.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -31,25 +28,24 @@ public class AuthController {
     private JwtService jwtService;
 
     @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<SuccessResponse> signUp(@RequestBody RegisterDTO signUpInformations){
+    public ResponseEntity<TokenResponse> signUp(@RequestBody RegisterDTO signUpInformations){
         User user = this.authService.signUp(signUpInformations);
         Map <String, String> jwt = this.jwtService.generate(user.getEmail());
         String bearer = "Bearer "+jwt.get("token");
 
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus status = HttpStatus.OK;
-        String message = "Inscription réussie";
-        SuccessResponse response = new SuccessResponse(statusCode, status, message);
-        return ResponseEntity.status(status).header(HttpHeaders.AUTHORIZATION, bearer).body(response);
+        TokenResponse response = new TokenResponse(jwt.get("token"));
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.AUTHORIZATION, bearer).body(response);
     }
 
     @PostMapping(path = "login", consumes = APPLICATION_JSON_VALUE)
-    public Map<String,String> signIn(@RequestBody AuthDTO signInInformations){
+    public  ResponseEntity<TokenResponse> signIn(@RequestBody SignInDTO signInInformations){
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInInformations.email(), signInInformations.password())
         );
         if(authentication.isAuthenticated()) {
-            return this.jwtService.generate(signInInformations.email());
+            String jwt =  this.jwtService.generate(signInInformations.email()).get("token");
+            TokenResponse response = new TokenResponse(jwt);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         return null;
     }
