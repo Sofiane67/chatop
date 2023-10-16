@@ -21,10 +21,10 @@ public class Message {
     private String message;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "rental_id")
-    private Rental rentalId;
+    private Rental rental;
     @Column(name = "created_at")
     private Instant createdAt;
     @Column(name = "updated_at")

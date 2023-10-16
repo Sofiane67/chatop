@@ -24,10 +24,11 @@ public class Rental {
     private double price;
     private String picture;
     private String description;
+    private double surface;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User ownerId;
-    @OneToMany(mappedBy = "rentalId")
+    private User owner;
+    @OneToMany(mappedBy = "rental")
     private List<Message> messages;
     @Column(name = "created_at")
     private Instant createdAt;

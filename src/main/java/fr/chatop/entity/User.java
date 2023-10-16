@@ -25,10 +25,10 @@ public class User {
     private String name;
     private String password;
 
-    @OneToMany(mappedBy = "ownerId", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Rental> rentals;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private List<Message> messages;
     @Column(name = "created_at")
     private Instant createdAt;
