@@ -2,6 +2,7 @@ package fr.chatop.controller;
 
 import fr.chatop.config.jwt.JwtService;
 import fr.chatop.dto.*;
+import fr.chatop.dto.response.TokenResponse;
 import fr.chatop.entity.User;
 import fr.chatop.service.AuthService;
 import lombok.AllArgsConstructor;

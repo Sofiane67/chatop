@@ -1,4 +1,4 @@
-package fr.chatop.dto;
+package fr.chatop.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

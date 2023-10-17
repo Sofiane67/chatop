@@ -1,6 +1,5 @@
 package fr.chatop.service;
 
-
 import fr.chatop.dto.RentalDTO;
 import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.Rental;
@@ -11,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Service
@@ -20,8 +19,21 @@ public class RentalService {
     private AuthService authService;
     private UserService userService;
 
-    public List<Rental> getAllRentals(){
-        return rentalRepository.findAll();
+    public Stream<RentalDTO> getAllRentals(){
+        return rentalRepository.findAll().stream().map(rental -> {
+            return new RentalDTO(
+                rental.getId(),
+                rental.getName(),
+                rental.getSurface(),
+                rental.getPrice(),
+                rental.getPicture(),
+                rental.getDescription(),
+                rental.getOwner().getId(),
+                rental.getCreatedAt(),
+                rental.getUpdatedAt()
+            );
+        }
+        );
     }
 
     public RentalDTO getRentalById(int id){

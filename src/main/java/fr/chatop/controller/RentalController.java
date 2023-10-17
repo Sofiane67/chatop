@@ -1,7 +1,8 @@
 package fr.chatop.controller;
 
 import fr.chatop.dto.RentalDTO;
-import fr.chatop.dto.ResponseMessage;
+import fr.chatop.dto.response.RentalsResponse;
+import fr.chatop.dto.response.ResponseMessage;
 import fr.chatop.entity.Rental;
 import fr.chatop.service.RentalService;
 import fr.chatop.service.StorageService;
@@ -11,18 +12,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.stream.Stream;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("rentals")
+@RequestMapping(path = "rentals", produces = APPLICATION_JSON_VALUE)
 public class RentalController {
     private RentalService rentalService;
     private StorageService storageService;
-
     @GetMapping
-    public List<Rental> getAllRentals(){
-        return this.rentalService.getAllRentals();
+    public ResponseEntity<RentalsResponse>  getAllRental(){
+
+        Stream<RentalDTO> rentals = this.rentalService.getAllRentals();
+        RentalsResponse response = new RentalsResponse();
+        response.setRentals(rentals);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping(path = "{id}")
