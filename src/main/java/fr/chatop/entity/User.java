@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -31,7 +30,18 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Message> messages;
     @Column(name = "created_at")
-    private Instant createdAt;
+    private Date createdAt;
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private Date updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 }

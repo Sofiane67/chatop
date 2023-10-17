@@ -1,6 +1,6 @@
 package fr.chatop.dto;
 
-import java.time.Instant;
+import java.util.Date;
 
-public record UserDTO(int id, String name, String email, Instant createdAt, Instant updatedAt) {
+public record UserDTO(int id, String name, String email, Date created_at, Date updated_at) {
 }

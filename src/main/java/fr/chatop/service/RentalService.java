@@ -9,7 +9,7 @@ import fr.chatop.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
@@ -21,18 +21,18 @@ public class RentalService {
 
     public Stream<RentalDTO> getAllRentals(){
         return rentalRepository.findAll().stream().map(rental -> {
-            return new RentalDTO(
-                rental.getId(),
-                rental.getName(),
-                rental.getSurface(),
-                rental.getPrice(),
-                rental.getPicture(),
-                rental.getDescription(),
-                rental.getOwner().getId(),
-                rental.getCreatedAt(),
-                rental.getUpdatedAt()
-            );
-        }
+                return new RentalDTO(
+                    rental.getId(),
+                    rental.getName(),
+                    rental.getSurface(),
+                    rental.getPrice(),
+                    rental.getPicture(),
+                    rental.getDescription(),
+                    rental.getOwner().getId(),
+                    rental.getCreatedAt(),
+                    rental.getUpdatedAt()
+                );
+            }
         );
     }
 
@@ -40,7 +40,9 @@ public class RentalService {
         Rental rental = this.rentalRepository.findById(id).orElseThrow(() -> new RentalNotFoundException());
         if(rental.getOwner() != null){
             int ownerId = rental.getOwner().getId();
-            return new RentalDTO(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(), rental.getPicture(), rental.getDescription(), ownerId, rental.getCreatedAt(), rental.getUpdatedAt());
+            Date createdAt = rental.getCreatedAt();
+            Date updatedAt = rental.getUpdatedAt();
+            return new RentalDTO(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(), rental.getPicture(), rental.getDescription(), ownerId, createdAt, updatedAt);
         }
         return null;
     }
@@ -51,8 +53,6 @@ public class RentalService {
 
         if(user != null){
             rental.setOwner(user);
-            rental.setCreatedAt(Instant.now());
-            rental.setUpdatedAt(Instant.now());
             this.rentalRepository.save(rental);
         }
 

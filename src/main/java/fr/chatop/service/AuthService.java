@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -46,15 +46,13 @@ public class AuthService implements UserDetailsService {
             user.setEmail(signUpInformations.email());
             String hashPassword = this.passwordEncoder.encode(signUpInformations.password());
             user.setPassword(hashPassword);
-            user.setCreatedAt(Instant.now());
-            user.setUpdatedAt(Instant.now());
             return this.userRepository.save(user);
         }
 
         return null;
     }
 
-    public UserDTO getUserLogged(){
+    public UserDTO getUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(!authentication.isAuthenticated()){
@@ -62,8 +60,11 @@ public class AuthService implements UserDetailsService {
         }
 
         String userEmail = authentication.getName();
-
         User user = this.userService.getUserByEmail(userEmail);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+
+        Date createdAt = user.getCreatedAt();
+        Date updatedAt = user.getUpdatedAt();
+
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), createdAt, updatedAt);
     }
 }

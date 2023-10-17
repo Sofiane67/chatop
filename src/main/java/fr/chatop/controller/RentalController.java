@@ -54,17 +54,13 @@ public class RentalController {
 
             this.rentalService.createRental(rental);
             ResponseMessage response = new ResponseMessage();
-            response.setStatus(HttpStatus.OK);
-            response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Uploaded the file successfully: " + picture.getOriginalFilename());
 
-            return ResponseEntity.status(response.getStatus()).body(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             ResponseMessage response = new ResponseMessage();
-            response.setStatus(HttpStatus.EXPECTATION_FAILED);
-            response.setStatusCode(HttpStatus.EXPECTATION_FAILED.value());
             response.setMessage("Could not upload the file: " + picture.getOriginalFilename() + ". Error: " + e.getMessage());
-            return ResponseEntity.status(response.getStatusCode()).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

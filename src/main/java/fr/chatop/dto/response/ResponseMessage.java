@@ -11,7 +11,5 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 public class ResponseMessage {
-    private int statusCode;
-    private HttpStatus status;
     private String message;
 }

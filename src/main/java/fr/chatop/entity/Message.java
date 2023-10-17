@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class Message {
     @JoinColumn(name = "rental_id")
     private Rental rental;
     @Column(name = "created_at")
-    private Instant createdAt;
+    private Date createdAt;
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private Date updatedAt;
 }
