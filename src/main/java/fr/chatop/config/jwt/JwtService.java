@@ -1,7 +1,9 @@
 package fr.chatop.config.jwt;
 
+import fr.chatop.exception.JwtTokenExpiredException;
 import fr.chatop.service.AuthService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -39,9 +41,20 @@ public class JwtService {
         return this.parseToken(token).getSubject();
     }
 
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
     public boolean isTokenExpired(String token) {
-        Date expirationDate = this.parseToken(token).getExpiration();
-        return expirationDate.before(new Date());
+        try {
+            Date expirationDate = this.parseToken(token).getExpiration();
+            if (expirationDate.before(new Date())) {
+                throw new JwtTokenExpiredException();
+            }
+            return false;
+        } catch (ExpiredJwtException e) {
+            throw new JwtTokenExpiredException();
+        }
     }
 
     private Map<String, String> generateJwt(UserDetails userDetails) {
