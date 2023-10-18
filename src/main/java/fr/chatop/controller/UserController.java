@@ -1,6 +1,8 @@
 package fr.chatop.controller;
 
 import fr.chatop.dto.UserDTO;
+import fr.chatop.entity.User;
+import fr.chatop.mapper.UserMapper;
 import fr.chatop.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class UserController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable int id){
-        UserDTO userDTO = this.userService.getUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+        User user = this.userService.getUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(UserMapper.mapper(user));
     }
 }

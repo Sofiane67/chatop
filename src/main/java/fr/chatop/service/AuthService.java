@@ -3,6 +3,7 @@ package fr.chatop.service;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.User;
+import fr.chatop.mapper.UserMapper;
 import fr.chatop.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,6 @@ public class AuthService implements UserDetailsService {
         String userEmail = authentication.getName();
         User user = this.userService.getUserByEmail(userEmail);
 
-        return this.userService.getUserById(user.getId());
+        return UserMapper.mapper(user);
     }
 }

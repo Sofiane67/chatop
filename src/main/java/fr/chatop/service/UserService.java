@@ -29,10 +29,7 @@ public class UserService {
         return this.userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
     }
 
-    public UserDTO getUserById(int id){
-        User user =
-            this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
-
-            return UserMapper.mapper(user);
+    public User getUserById(int id){
+        return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
     }
 }
