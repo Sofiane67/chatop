@@ -62,9 +62,6 @@ public class AuthService implements UserDetailsService {
         String userEmail = authentication.getName();
         User user = this.userService.getUserByEmail(userEmail);
 
-        Date createdAt = user.getCreatedAt();
-        Date updatedAt = user.getUpdatedAt();
-
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), createdAt, updatedAt);
+        return this.userService.getUserById(user.getId());
     }
 }

@@ -54,12 +54,12 @@ public class RentalController {
 
             this.rentalService.createRental(rental);
             ResponseMessage response = new ResponseMessage();
-            response.setMessage("Uploaded the file successfully: " + picture.getOriginalFilename());
+            response.setMessage("Rental created !");
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             ResponseMessage response = new ResponseMessage();
-            response.setMessage("Could not upload the file: " + picture.getOriginalFilename() + ". Error: " + e.getMessage());
+            response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

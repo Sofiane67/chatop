@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         return new ErrorEntity(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, exception.getMessage());
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public @ResponseBody ErrorEntity handleUserNotFoundException(UserNotFoundException exception){
+        return new ErrorEntity(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND,
+            exception.getMessage());
+    }
+
 }
