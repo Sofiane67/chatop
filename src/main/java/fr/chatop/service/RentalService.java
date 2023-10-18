@@ -27,12 +27,9 @@ public class RentalService {
         );
     }
 
-    public RentalDTO getRentalById(int id){
-        Rental rental = this.rentalRepository.findById(id).orElseThrow(() -> new RentalNotFoundException());
-        if(rental.getOwner() != null){
-            return RentalMapper.mapper(rental);
-        }
-        return null;
+    public Rental getRentalById(int id){
+        return this.rentalRepository.findById(id).orElseThrow(() -> new RentalNotFoundException());
+
     }
 
     public void createRental(Rental rental){
@@ -43,6 +40,17 @@ public class RentalService {
             rental.setOwner(user);
             this.rentalRepository.save(rental);
         }
+    }
+
+    public void editRental(Rental rental, int id){
+        Rental currentRental = this.getRentalById(id);
+
+        currentRental.setName(rental.getName());
+        currentRental.setSurface(rental.getSurface());
+        currentRental.setPrice(rental.getPrice());
+        currentRental.setDescription(rental.getDescription());
+
+        this.rentalRepository.save(currentRental);
 
     }
 }
