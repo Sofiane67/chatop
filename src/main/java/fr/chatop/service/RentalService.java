@@ -5,6 +5,7 @@ import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.Rental;
 import fr.chatop.entity.User;
 import fr.chatop.exception.RentalNotFoundException;
+import fr.chatop.mapper.RentalMapper;
 import fr.chatop.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,7 @@ public class RentalService {
 
     public Stream<RentalDTO> getAllRentals(){
         return rentalRepository.findAll().stream().map(rental -> {
-                return new RentalDTO(
-                    rental.getId(),
-                    rental.getName(),
-                    rental.getSurface(),
-                    rental.getPrice(),
-                    rental.getPicture(),
-                    rental.getDescription(),
-                    rental.getOwner().getId(),
-                    rental.getCreatedAt(),
-                    rental.getUpdatedAt()
-                );
+                return RentalMapper.mapper(rental);
             }
         );
     }
@@ -39,10 +30,7 @@ public class RentalService {
     public RentalDTO getRentalById(int id){
         Rental rental = this.rentalRepository.findById(id).orElseThrow(() -> new RentalNotFoundException());
         if(rental.getOwner() != null){
-            int ownerId = rental.getOwner().getId();
-            Date createdAt = rental.getCreatedAt();
-            Date updatedAt = rental.getUpdatedAt();
-            return new RentalDTO(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(), rental.getPicture(), rental.getDescription(), ownerId, createdAt, updatedAt);
+            return RentalMapper.mapper(rental);
         }
         return null;
     }
