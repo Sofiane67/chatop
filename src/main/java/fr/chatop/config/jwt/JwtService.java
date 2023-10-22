@@ -10,6 +10,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,19 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
-@AllArgsConstructor
 @Slf4j
 @Service
 public class JwtService {
-    private final String ENCRIPTION_KEY = "608f36e92dc66d97d5933f0e6371493cb4fc05b1aa8f8de64014732472303a7c";
+    private final String ENCRIPTION_KEY;
+    private final int EXPIRATION_TIME;
     private AuthService authService;
+
+    public JwtService(@Value("${JWT_SECRET}") String encryptionKey, @Value("$" +
+        "{JWT_EXPIRATION}") int expirationTime, AuthService authService) {
+        this.ENCRIPTION_KEY = encryptionKey;
+        this.EXPIRATION_TIME = expirationTime;
+        this.authService = authService;
+    }
 
     public Map<String, String> generate(String username) {
         UserDetails userDetails = this.authService.loadUserByUsername(username);
@@ -59,10 +67,10 @@ public class JwtService {
 
     private Map<String, String> generateJwt(UserDetails userDetails) {
         final long currentTime = System.currentTimeMillis();
-        final long expirationTime = currentTime + 30 * 60 * 1000;
+        final long expirationTime = currentTime + EXPIRATION_TIME;
 
         final Map<String, Object> claims = Map.of(
-                "nom", userDetails.getUsername(),
+                "email", userDetails.getUsername(),
                 Claims.EXPIRATION, new Date(expirationTime),
                 Claims.SUBJECT, userDetails.getUsername()
         );
