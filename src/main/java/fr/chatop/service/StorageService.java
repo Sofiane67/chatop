@@ -1,19 +1,25 @@
 package fr.chatop.service;
 
-import org.springframework.core.io.Resource;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.util.stream.Stream;
+import java.io.IOException;
+import java.util.Map;
 
-public interface StorageService {
-    public void init();
+@AllArgsConstructor
+@Service
+public class StorageService {
+    private Cloudinary cloudinary;
 
-    public String save(MultipartFile file);
-
-    public Resource load(String filename);
-
-    public void deleteAll();
-
-    public Stream<Path> loadAll();
+    public String uploadFile(MultipartFile file){
+        try{
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            return (String) uploadResult.get("secure_url");
+        }catch (IOException e) {
+            throw new RuntimeException("Failed to upload file to Cloudinary: " + e.getMessage());
+        }
+    }
 }

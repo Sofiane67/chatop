@@ -1,7 +1,10 @@
 package fr.chatop.config.app;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import fr.chatop.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -19,6 +22,13 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
+    @Value("${CLOUDINARY_NAME}")
+    private String cloudinaryName;
+    @Value("${CLOUDINARY_API_KEY}")
+    private String cloudinaryApiKey;
+
+    @Value("${CLOUDINARY_API_SECRET}")
+    private String cloudinaryApiSecret;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -60,4 +70,17 @@ public class AppConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+    @Bean
+    public Cloudinary cloudinary(){
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+    "cloud_name", cloudinaryName,
+            "api_key", cloudinaryApiKey,
+            "api_secret", cloudinaryApiSecret)
+        );
+
+        return cloudinary;
+    }
+
+
 }

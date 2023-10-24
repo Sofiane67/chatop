@@ -45,7 +45,7 @@ public class RentalController {
                                                         @RequestParam("price") double price,
                                                         @RequestParam("surface") double surface){
         try {
-            String filename = storageService.save(picture);
+            String filename = storageService.uploadFile(picture);
 
             Rental rental = new Rental();
             rental.setName(name);
