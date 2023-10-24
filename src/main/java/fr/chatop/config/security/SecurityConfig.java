@@ -29,6 +29,8 @@ public class SecurityConfig {
             authorize
                 .requestMatchers(HttpMethod.POST, "auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "auth/login").permitAll()
+                .requestMatchers("/v3/**").permitAll()
+                .requestMatchers("/swagger-ui/**","/swagger-ui.html").permitAll()
                 .anyRequest().authenticated();
         })
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
