@@ -3,8 +3,10 @@ package fr.chatop.service;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.User;
+import fr.chatop.exception.JwtTokenExpiredException;
 import fr.chatop.mapper.UserMapper;
 import fr.chatop.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -17,9 +19,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+@Hidden
 @AllArgsConstructor
 @Slf4j
 @Service
@@ -41,6 +43,11 @@ public class AuthService implements UserDetailsService {
     }
     public User signUp(RegisterDTO signUpInformations){
         boolean userExist = this.userService.verifyUserExist(signUpInformations.email());
+
+        if(!signUpInformations.email().contains("@")){
+            throw new JwtTokenExpiredException();
+        }
+
         if(!userExist){
             User user = new User();
             user.setName(signUpInformations.name());
@@ -55,11 +62,6 @@ public class AuthService implements UserDetailsService {
 
     public UserDTO getUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(!authentication.isAuthenticated()){
-            return null;
-        }
-
         String userEmail = authentication.getName();
         User user = this.userService.getUserByEmail(userEmail);
 
