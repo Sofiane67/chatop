@@ -80,6 +80,18 @@ public class AuthController {
             }
         )
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = RegisterDTO.class),
+            examples = @ExampleObject(
+                name = "Example Request",
+                value = "{\n  \"email\": \"test@test.com\",\n  \"name\": \"test TEST\"\n,\n  \"password\": " +
+                    "\"test!31\"\n}",
+                summary = "Example of a request to sign up"
+            )
+        )
+    )
     @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<TokenResponse> signUp(@RequestBody RegisterDTO signUpInformations){
         User user = this.authService.signUp(signUpInformations);
@@ -135,15 +147,26 @@ public class AuthController {
                                 value = "{\n  \"code\": 401,\n \"status\": " +
                                     "\"UNAUTHORIZED\"\n ,\n \"message\": " +
                                     "\"Authentication failed\"\n }",
-                                summary = "Exemple de réponse non autorisée en cas d'échec de la connexion"
+                                summary = "Example of unauthorized response on connection failure"
                             )
                         }
                     )
                 }
             )
         })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SignInDTO.class),
+            examples = @ExampleObject(
+                name = "Example Request",
+                value = "{\n  \"email\": \"test@test.com\",\n  \"password\": \"test!31\"\n}",
+                summary = "Example of a request to log in"
+            )
+        )
+    )
     @PostMapping(path = "login", consumes = APPLICATION_JSON_VALUE)
-    public  ResponseEntity<?> signIn(@RequestBody SignInDTO signInInformations){
+    public  ResponseEntity<?> signIn(@RequestBody() SignInDTO signInInformations){
       try {
         final Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(signInInformations.email(), signInInformations.password())
@@ -165,14 +188,14 @@ public class AuthController {
       value = {
           @ApiResponse(
               responseCode = "200",
-              description = "query executed successfully",
+              description = "Query executed successfully",
               content = {
                   @Content(
                       schema = @Schema(implementation = UserDTO.class),
                       mediaType = "application/json",
                       examples = {
                           @ExampleObject(
-                              name = "Successful Registration",
+                              name = "Success response",
                               value = "{" +
                                   "\n  \"id\": 1," +
                                   "\n \"name\": \"John Doe\"," +
