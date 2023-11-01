@@ -131,18 +131,7 @@ public class AuthController {
             ),
             @ApiResponse(
                 responseCode = "400",
-                description = "Bad request",
-                content = {
-                    @Content(
-                        schema = @Schema(),
-                        mediaType = "application/json",
-                        examples = {}
-                    )
-                }
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description = "Unauthorized access",
+                description = "Authentication failed",
                 content = {
                     @Content(
                         schema = @Schema(implementation = ErrorEntity.class),
@@ -150,10 +139,10 @@ public class AuthController {
                         examples = {
                             @ExampleObject(
                                 name = "Authentication failed",
-                                value = "{\n  \"code\": 401,\n \"status\": " +
-                                    "\"UNAUTHORIZED\"\n ,\n \"message\": " +
+                                value = "{\n  \"code\": 400,\n \"status\": " +
+                                    "\"BAD_REQUEST\"\n ,\n \"message\": " +
                                     "\"Authentication failed\"\n }",
-                                summary = "Example of unauthorized response on connection failure"
+                                summary = "Example response to connection failure"
                             )
                         }
                     )
@@ -177,14 +166,15 @@ public class AuthController {
             final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInInformations.email(), signInInformations.password())
             );
+
             String jwt = this.jwtService.generate(signInInformations.email()).get("token");
             TokenResponse response = new TokenResponse(jwt);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (AuthenticationException e) {
-            ErrorEntity error = new ErrorEntity(HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED, "Authentication failed");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+            ErrorEntity error = new ErrorEntity(HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST, "Authentication failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
 

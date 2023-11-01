@@ -41,6 +41,13 @@ public class GlobalExceptionHandler {
         return new ErrorEntity(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, exception.getMessage());
     }
 
+    @ExceptionHandler(InvalidEmailException.class)
+    public ResponseEntity<ErrorEntity> handleInvalidEmailException(InvalidEmailException exception){
+        ErrorEntity errorEntity = new ErrorEntity(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST,
+            exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorEntity);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorEntity> handleUserNotFoundException(UserNotFoundException exception){
         ErrorEntity errorEntity = new ErrorEntity(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND,

@@ -3,6 +3,7 @@ package fr.chatop.service;
 import fr.chatop.dto.RegisterDTO;
 import fr.chatop.dto.UserDTO;
 import fr.chatop.entity.User;
+import fr.chatop.exception.InvalidEmailException;
 import fr.chatop.exception.JwtTokenExpiredException;
 import fr.chatop.mapper.UserMapper;
 import fr.chatop.repository.UserRepository;
@@ -45,7 +46,7 @@ public class AuthService implements UserDetailsService {
         boolean userExist = this.userService.verifyUserExist(signUpInformations.email());
 
         if(!signUpInformations.email().contains("@")){
-            throw new JwtTokenExpiredException();
+            throw new InvalidEmailException();
         }
 
         if(!userExist){

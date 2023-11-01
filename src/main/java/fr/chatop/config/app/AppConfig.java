@@ -36,7 +36,7 @@ public class AppConfig {
         configurer.setLocation(new FileSystemResource(".env"));
         return configurer;
     }
-        @Bean
+    @Bean
     public AuthenticationProvider authenticationProvider(AuthService authService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(authService);
