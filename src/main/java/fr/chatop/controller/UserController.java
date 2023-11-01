@@ -25,15 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Tag(name = "User", description = "Concerns all operations for a user")
+@Tag(name = "User", description = "Concerns all operations for users")
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = "user", produces = APPLICATION_JSON_VALUE)
 public class UserController {
     private UserService userService;
 
-    @Operation(summary = "User information by id", description =
-        "Allows you to obtain user information based on an identifier")
+    @Operation(
+        summary = "User information by id",
+        description = "Allows you to obtain user information based on an identifier"
+    )
     @ApiResponses(
         value = {
             @ApiResponse(

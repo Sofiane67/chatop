@@ -23,6 +23,7 @@ public class Rental {
     private String name;
     private double price;
     private String picture;
+    @Column(length = 10000)
     private String description;
     private double surface;
     @ManyToOne
