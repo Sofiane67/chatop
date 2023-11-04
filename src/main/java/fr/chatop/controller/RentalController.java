@@ -10,7 +10,6 @@ import fr.chatop.mapper.RentalMapper;
 import fr.chatop.service.RentalService;
 import fr.chatop.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -30,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @Tag(name = "Rental", description = "Concerns all operations for rentals")
 @AllArgsConstructor
@@ -235,6 +235,14 @@ public class RentalController {
                             )
                         }
                     )
+                },
+                headers = {
+                    @Header(
+                        name = HttpHeaders.AUTHORIZATION,
+                        description = "Bearer token",
+                        schema = @Schema(type = "string"),
+                        required = true
+                    ),
                 }
             ),
             @ApiResponse(
@@ -256,33 +264,16 @@ public class RentalController {
                     )
                 }
             )
-        })
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        content = @Content(
-            mediaType = "multipart/form-data",
-            schema = @Schema(implementation = Object.class, format = "binary"),
-            examples = @ExampleObject(
-                name = "Example Request",
-                value = "{\n  " +
-                    "\"name\": \"rentalName\"," +
-                    "\n \"description\": \"some text\"\n," +
-                    "\n \"price\": \"99\"" +
-                    "\n \"surface\": \"99\"" +
-                    "\n \"picture\": \"MultipartFile\"" +
-                    "\n}",
-                summary = "Example of a request to create a rental"
-
-            )
-        )
+        }
     )
     @SecurityRequirement(name = "Bearer Auth")
-    @PostMapping
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseMessage> createRental(
         @RequestParam("name") String name,
         @RequestParam("description") String description,
         @RequestParam("price") double price,
         @RequestParam("surface") double surface,
-        @Parameter(description = "image/jpeg or image/jpg or image/png" ) @RequestParam("picture") MultipartFile picture){
+        @RequestParam(value = "picture") MultipartFile picture){
 
         String fileType = picture.getContentType();
 
