@@ -1,0 +1,42 @@
+DROP DATABASE IF EXISTS chatop;
+
+CREATE DATABASE chatop;
+
+USE chatop;
+
+-- Crée la table users
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE rentals (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255) NOT NULL,
+     price DOUBLE NOT NULL,
+     picture VARCHAR(255),
+     description TEXT,
+     surface DOUBLE,
+     owner_id INT,
+     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+
+CREATE TABLE messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  message TEXT NOT NULL,
+  user_id INT,
+  rental_id INT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (rental_id) REFERENCES rentals(id)
+);
+
+INSERT INTO users (email, name, password) VALUES ('test@test.com', 'test TEST', '$2y$10$2HqKmG.bHZeS.HADEseOLu1vE1t69hGHQ6llQqLdeyxUTuoUEXgRO');
+
