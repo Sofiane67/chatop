@@ -10,6 +10,8 @@ Start by cloning this repository to your local machine:
 git clone https://github.com/Sofiane67/chatop.git
 ```
 
+go to the `release/1.0.0` branch
+
 ## Configuring Environment Variables
 
 1. Create a `.env` file at the root of the project with the configuration parameters for your database (see `.env-example` file for an example):
