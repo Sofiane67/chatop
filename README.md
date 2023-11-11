@@ -64,6 +64,12 @@ By executing the `docker-compose.yml` file, MySQL is configured to listen on por
 
 2. Execute the SQL script found in the `src/main/resources/init.sql` file to create the `chatop` database, tables, and a test user.
 
+### User test
+```text
+email : test@test.com
+password: test!31
+```
+
 ## Starting the Application
 
 1. Open a terminal and navigate to the project folder:
